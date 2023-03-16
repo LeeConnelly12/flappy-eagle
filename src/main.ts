@@ -121,6 +121,7 @@ function restartGame() {
   // Start the animation loop.
   lastTime = 0
   animate(0)
+  eagle.score = 0
 }
 
 animationId = requestAnimationFrame(animate)
