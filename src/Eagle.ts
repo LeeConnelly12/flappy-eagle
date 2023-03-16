@@ -25,10 +25,21 @@ export default class Eagle {
 
     // Check if eagle has passed any rectangles.
     rectangles.forEach((rect) => {
-      if (!rect.passed && this.x > rect.x + rect.width) {
-        rect.passed = true
-        this.score++
+      if (rect.passed) {
+        return
       }
+
+      if (this.x <= rect.x + rect.width) {
+        return
+      }
+
+      const passedTwoRectangles = rectangles.some(
+        (r) => r !== rect && r.x === rect.x,
+      )
+
+      this.score += passedTwoRectangles ? 0.5 : 1.0
+
+      rect.passed = true
     })
   }
 
