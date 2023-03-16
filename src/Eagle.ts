@@ -2,7 +2,7 @@ import Rectangle from '@/Rectangle'
 
 export default class Eagle {
   public velocityY = 0
-  private gravity = 0.2
+  private gravity = 0.4
   public score = 0
 
   constructor(

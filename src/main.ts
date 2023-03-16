@@ -14,8 +14,9 @@ const eagle = new Eagle(50, 50, 25, canvas.width / 2, canvas.height / 2)
 const rectGenerator = new RectangleGenerator(canvas)
 
 canvas.addEventListener('click', () => {
-  eagle.velocityY = -4
+  eagle.velocityY = -5
 })
+
 function animate(timestamp: number) {
   animationId = requestAnimationFrame(animate)
 
