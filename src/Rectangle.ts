@@ -13,7 +13,7 @@ export default class Rectangle {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = 'white'
+    ctx.fillStyle = '#73be2e'
     ctx.fillRect(this.x, this.y, this.width, this.height)
   }
 
