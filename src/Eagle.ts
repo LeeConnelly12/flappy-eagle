@@ -16,16 +16,9 @@ export default class Eagle {
     context.stroke()
   }
 
-  public update(canvas: HTMLCanvasElement) {
-    this.velocityY += this.gravity
-
+  public update() {
     this.y += this.velocityY
-
-    if (this.y + this.radius >= canvas.height) {
-      return false
-    }
-
-    return true
+    this.velocityY += this.gravity
   }
 
   public reset(canvas: HTMLCanvasElement) {

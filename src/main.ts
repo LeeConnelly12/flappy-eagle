@@ -1,5 +1,6 @@
 import './style.css'
 import Eagle from '@/Eagle'
+import RectangleGenerator from '@/RectangleGenerator'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
@@ -8,6 +9,7 @@ canvas.width = 480
 canvas.height = 640
 
 const eagle = new Eagle(50, 50, 25, canvas.width / 2, canvas.height / 2)
+const rectGenerator = new RectangleGenerator(canvas)
 
 canvas.addEventListener('click', () => {
   eagle.velocityY = -4
@@ -30,10 +32,16 @@ function animate(timestamp: number) {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+  // Generate and draw the rectangles
+  rectGenerator.generateRectangles()
+
+  eagle.update()
   eagle.draw(ctx)
 
-  const shouldContinue = eagle.update(canvas)
-  if (shouldContinue) {
+  rectGenerator.update()
+  rectGenerator.draw(ctx)
+
+  if (!rectGenerator.collidesWithEagle(eagle)) {
     lastTime = timestamp
     return
   }
