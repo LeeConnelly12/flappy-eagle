@@ -8,22 +8,19 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 canvas.width = 480
 canvas.height = 640
 
+let lastTime = 0
+let animationId: number
 const eagle = new Eagle(50, 50, 25, canvas.width / 2, canvas.height / 2)
 const rectGenerator = new RectangleGenerator(canvas)
 
 canvas.addEventListener('click', () => {
   eagle.velocityY = -4
 })
-
-let lastTime = 0
-let animationId: number
-
 function animate(timestamp: number) {
   animationId = requestAnimationFrame(animate)
 
+  // Cap the FPS to 60.
   const elapsed = timestamp - lastTime
-
-  /** Cap the FPS to 60. */
   if (elapsed < 16.67) {
     return
   }
@@ -32,28 +29,36 @@ function animate(timestamp: number) {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  // Generate and draw the rectangles
-  rectGenerator.generateRectangles()
-
-  eagle.update()
-  eagle.draw(ctx)
-
+  // Generate and draw the rectangles.
+  rectGenerator.generateRectangles(timestamp)
   rectGenerator.update()
   rectGenerator.draw(ctx)
 
-  if (!eagle.collidesWithRectangles(rectGenerator.rects)) {
-    lastTime = timestamp
-    return
+  // Update and draw the eagle.
+  eagle.update()
+  eagle.draw(ctx)
+
+  // Check for collision with bottom of canvas.
+  if (eagle.y + eagle.radius > canvas.height) {
+    handleGameOver()
   }
 
-  cancelAnimationFrame(animationId)
-  drawGameOver(ctx)
+  // Check for collisions between the eagle and the rectangles.
+  if (eagle.collidesWithRectangles(rectGenerator.rects)) {
+    handleGameOver()
+  }
 
+  lastTime = timestamp
+}
+
+function handleGameOver() {
+  cancelAnimationFrame(animationId)
+  drawGameOver()
   document.addEventListener('keydown', pressedSpaceToRestartGame)
   canvas.addEventListener('click', restartGame)
 }
 
-function drawGameOver(ctx: CanvasRenderingContext2D) {
+function drawGameOver() {
   ctx.fillStyle = '#FFFFFF'
   ctx.font = 'bold 48px sans-serif'
 
@@ -82,10 +87,19 @@ function pressedSpaceToRestartGame(event: KeyboardEvent) {
 }
 
 function restartGame() {
+  // Clear the rectangles from the canvas.
+  rectGenerator.rects.splice(0, rectGenerator.rects.length)
+
+  // Reset the eagle's position and velocity.
+  eagle.reset(canvas)
+
+  // Remove the event listeners for restarting the game.
   document.removeEventListener('keydown', pressedSpaceToRestartGame)
   canvas.removeEventListener('click', restartGame)
-  eagle.reset(canvas)
-  animate(performance.now())
+
+  // Start the animation loop.
+  lastTime = 0
+  animate(0)
 }
 
 animationId = requestAnimationFrame(animate)
