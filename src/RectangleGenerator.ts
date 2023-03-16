@@ -59,14 +59,4 @@ export default class RectangleGenerator {
       rect.draw(context)
     }
   }
-
-  collidesWithEagle(eagle: Eagle) {
-    for (const rect of this.rects) {
-      if (rect.collidesWithEagle(this.canvas, eagle)) {
-        return true
-      }
-    }
-
-    return false
-  }
 }

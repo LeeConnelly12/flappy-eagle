@@ -41,7 +41,7 @@ function animate(timestamp: number) {
   rectGenerator.update()
   rectGenerator.draw(ctx)
 
-  if (!rectGenerator.collidesWithEagle(eagle)) {
+  if (!eagle.collidesWithRectangles(rectGenerator.rects)) {
     lastTime = timestamp
     return
   }
