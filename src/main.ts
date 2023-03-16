@@ -21,38 +21,63 @@ function animate(timestamp: number) {
 
   const elapsed = timestamp - lastTime
 
-  if (elapsed >= 16.67) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = '#70c5ce'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    eagle.draw(ctx)
-    const shouldContinue = eagle.update(canvas)
-
-    if (!shouldContinue) {
-      cancelAnimationFrame(animationId)
-
-      const gameOverMenu = document.createElement('div')
-      gameOverMenu.innerText = 'Game Over'
-
-      const restartButton = document.createElement('button')
-      restartButton.innerText = 'Restart'
-
-      restartButton.addEventListener('click', () => {
-        gameOverMenu.remove()
-
-        eagle.y = canvas.height / 2
-        eagle.velocityY = 0
-
-        animationId = requestAnimationFrame(animate)
-      })
-
-      gameOverMenu.appendChild(restartButton)
-      document.body.appendChild(gameOverMenu)
-    }
-
-    lastTime = timestamp
+  /** Cap the FPS to 60. */
+  if (elapsed < 16.67) {
+    return
   }
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.fillStyle = '#70c5ce'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+  eagle.draw(ctx)
+
+  const shouldContinue = eagle.update(canvas)
+  if (shouldContinue) {
+    lastTime = timestamp
+    return
+  }
+
+  cancelAnimationFrame(animationId)
+  drawGameOver(ctx)
+
+  document.addEventListener('keydown', pressedSpaceToRestartGame)
+  canvas.addEventListener('click', restartGame)
+}
+
+function drawGameOver(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = '#FFFFFF'
+  ctx.font = 'bold 48px sans-serif'
+
+  const gameOverText = 'Game Over'
+  const gameOverTextWidth = ctx.measureText(gameOverText).width
+  const gameOverTextX = (canvas.width - gameOverTextWidth) / 2
+  const gameOverTextY = canvas.height / 2 - 24
+
+  ctx.fillText(gameOverText, gameOverTextX, gameOverTextY)
+
+  ctx.font = 'bold 24px sans-serif'
+  ctx.fillStyle = '#FFFFFF'
+
+  const restartText = 'Press space to restart'
+  const restartTextWidth = ctx.measureText(restartText).width
+  const restartTextX = (canvas.width - restartTextWidth) / 2
+  const restartTextY = canvas.height / 2 + 24
+
+  ctx.fillText(restartText, restartTextX, restartTextY)
+}
+
+function pressedSpaceToRestartGame(event: KeyboardEvent) {
+  if (event.code === 'Space') {
+    restartGame()
+  }
+}
+
+function restartGame() {
+  document.removeEventListener('keydown', pressedSpaceToRestartGame)
+  canvas.removeEventListener('click', restartGame)
+  eagle.reset(canvas)
+  animate(performance.now())
 }
 
 animationId = requestAnimationFrame(animate)
