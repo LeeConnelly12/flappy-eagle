@@ -35,8 +35,11 @@ function animate(timestamp: number) {
   rectGenerator.draw(ctx)
 
   // Update and draw the eagle.
-  eagle.update()
+  eagle.update(rectGenerator.rects)
   eagle.draw(ctx)
+
+  // Draw the score.
+  drawScore()
 
   // Check for collision with bottom of canvas.
   if (eagle.y + eagle.radius > canvas.height) {
@@ -78,6 +81,24 @@ function drawGameOver() {
   const restartTextY = canvas.height / 2 + 24
 
   ctx.fillText(restartText, restartTextX, restartTextY)
+}
+
+function drawScore() {
+  const padding = 80
+  const textSize = 50
+  const text = eagle.score.toString()
+
+  ctx.font = 'bold 54px FlappyBird'
+  const textWidth = ctx.measureText(text).width
+
+  const x = canvas.width / 2 - textWidth / 2
+  const y = padding + textSize
+
+  ctx.fillStyle = '#fff'
+  ctx.strokeStyle = '#000'
+  ctx.lineWidth = 2
+  ctx.fillText(text, x, y)
+  ctx.strokeText(text, x, y)
 }
 
 function pressedSpaceToRestartGame(event: KeyboardEvent) {

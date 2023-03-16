@@ -4,6 +4,7 @@ export default class Rectangle {
   width: number
   height: number
   speed: number
+  passed = false
 
   constructor(
     x: number,

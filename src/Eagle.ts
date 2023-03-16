@@ -3,6 +3,7 @@ import Rectangle from '@/Rectangle'
 export default class Eagle {
   public velocityY = 0
   private gravity = 0.2
+  public score = 0
 
   constructor(
     public width: number,
@@ -18,9 +19,17 @@ export default class Eagle {
     context.stroke()
   }
 
-  public update() {
+  public update(rectangles: Rectangle[]) {
     this.y += this.velocityY
     this.velocityY += this.gravity
+
+    // Check if eagle has passed any rectangles.
+    rectangles.forEach((rect) => {
+      if (!rect.passed && this.x > rect.x + rect.width) {
+        rect.passed = true
+        this.score++
+      }
+    })
   }
 
   public reset(canvas: HTMLCanvasElement) {
