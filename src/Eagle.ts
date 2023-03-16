@@ -4,6 +4,10 @@ export default class Eagle {
   public velocityY = 0
   private gravity = 0.4
   public score = 0
+  private frameDelay = 5
+  private frameCount = 0
+  private spriteIndex = 0
+  private sprites: Array<HTMLImageElement>
 
   constructor(
     public width: number,
@@ -11,12 +15,36 @@ export default class Eagle {
     public radius: number,
     public x: number,
     public y: number,
-  ) {}
+    sprites: string[],
+  ) {
+    this.sprites = sprites.map((sprite) => {
+      const image = new Image()
+      image.src = sprite
+      return image
+    })
+  }
 
   public draw(context: CanvasRenderingContext2D) {
-    context.beginPath()
-    context.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
-    context.stroke()
+    // Increment frameCount
+    this.frameCount++
+
+    // Check if it's time to change the sprite
+    if (this.frameCount >= this.frameDelay) {
+      // Change sprite index and reset frameCount
+      this.spriteIndex = (this.spriteIndex + 1) % this.sprites.length
+      this.frameCount = 0
+    }
+
+    // Draw the current sprite
+    const image = this.sprites[this.spriteIndex]
+
+    context.drawImage(
+      image,
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height,
+    )
   }
 
   public update(rectangles: Rectangle[]) {

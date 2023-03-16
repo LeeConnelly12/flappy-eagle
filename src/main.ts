@@ -8,39 +8,50 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 canvas.width = 480
 canvas.height = 640
 
+let gameStarted = false
 let lastTime = 0
 let animationId: number
-const eagle = new Eagle(50, 50, 25, canvas.width / 2, canvas.height / 2)
+
+const eagle = new Eagle(68, 48, 25, canvas.width / 2, canvas.height / 2, [
+  '/images/upflap.png',
+  '/images/midflap.png',
+  '/images/downflap.png',
+])
+
 const rectGenerator = new RectangleGenerator(canvas)
 
 canvas.addEventListener('click', () => {
-  eagle.velocityY = -5
+  if (gameStarted) {
+    jump()
+  } else {
+    startGame()
+  }
 })
 
 function animate(timestamp: number) {
-  animationId = requestAnimationFrame(animate)
-
   // Cap the FPS to 60.
   const elapsed = timestamp - lastTime
-  if (elapsed < 16.67) {
+  if (elapsed < 1000 / 60) {
+    requestAnimationFrame(animate)
     return
   }
+
+  lastTime = timestamp
+
+  animationId = requestAnimationFrame(animate)
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  // Generate and draw the rectangles.
-  rectGenerator.generateRectangles(timestamp)
-  rectGenerator.update()
   rectGenerator.draw(ctx)
 
-  // Update and draw the eagle.
-  eagle.update(rectGenerator.rects)
+  // Draw and update the eagle.
   eagle.draw(ctx)
 
-  // Draw the score.
-  drawScore()
+  if (!gameStarted) {
+    return
+  }
 
   // Check for collision with bottom of canvas.
   if (eagle.y + eagle.radius > canvas.height) {
@@ -52,7 +63,14 @@ function animate(timestamp: number) {
     handleGameOver()
   }
 
-  lastTime = timestamp
+  eagle.update(rectGenerator.rects)
+
+  // Draw the score.
+  drawScore()
+
+  // Generate and draw the rectangles.
+  rectGenerator.generateRectangles(timestamp)
+  rectGenerator.update()
 }
 
 function handleGameOver() {
@@ -108,9 +126,17 @@ function pressedSpaceToRestartGame(event: KeyboardEvent) {
   }
 }
 
+function startGame() {
+  gameStarted = true
+}
+
+function jump() {
+  eagle.velocityY = -5
+}
+
 function restartGame() {
   // Clear the rectangles from the canvas.
-  rectGenerator.rects.splice(0, rectGenerator.rects.length)
+  rectGenerator.rects = []
 
   // Reset the eagle's position and velocity.
   eagle.reset(canvas)
@@ -120,6 +146,7 @@ function restartGame() {
   canvas.removeEventListener('click', restartGame)
 
   // Start the animation loop.
+  gameStarted = false
   lastTime = 0
   animate(0)
   eagle.score = 0
