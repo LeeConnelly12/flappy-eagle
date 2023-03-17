@@ -12,7 +12,7 @@ let gameStarted = false
 let lastTime = 0
 let animationId: number
 
-const eagle = new Eagle(68, 48, 25, canvas.width / 2, canvas.height / 2, [
+const eagle = new Eagle(68, 48, 25, canvas.width / 2.5, canvas.height / 2, [
   '/images/upflap.png',
   '/images/midflap.png',
   '/images/downflap.png',
