@@ -1,13 +1,13 @@
 import Rectangle from '@/Rectangle'
 
 export default class RectangleGenerator {
-  private canvas: HTMLCanvasElement
   public rects: Rectangle[] = []
   private lastRectTime: number = 0
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas
-  }
+  constructor(
+    private canvas: HTMLCanvasElement,
+    private ctx: CanvasRenderingContext2D,
+  ) {}
 
   public generateRectangles(timestamp: number): void {
     // If this is the first time the method is called, set the last rectangle generation time to the current timestamp
@@ -61,9 +61,9 @@ export default class RectangleGenerator {
     }
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  public draw() {
     for (const rect of this.rects) {
-      rect.draw(context)
+      rect.draw(this.ctx)
     }
   }
 }

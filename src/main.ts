@@ -1,31 +1,20 @@
 import './style.css'
 import Eagle from '@/Eagle'
 import RectangleGenerator from '@/RectangleGenerator'
+import Game from '@/Game'
 
-const canvas = document.getElementById('canvas') as HTMLCanvasElement
-const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-
-canvas.width = 480
-canvas.height = 640
-
-let gameStarted = false
 let lastTime = 0
 let animationId: number
 
-const eagle = new Eagle(68, 48, 25, canvas.width / 2.5, canvas.height / 2, [
-  '/images/upflap.png',
-  '/images/midflap.png',
-  '/images/downflap.png',
-])
+const game = new Game()
 
-const rectGenerator = new RectangleGenerator(canvas)
+const eagle = new Eagle(game.canvas, game.ctx)
 
-canvas.addEventListener('click', () => {
-  if (gameStarted) {
-    eagle.jump()
-  } else {
-    startGame()
-  }
+const rectGenerator = new RectangleGenerator(game.canvas, game.ctx)
+
+game.canvas.addEventListener('click', () => {
+  game.started = true
+  eagle.jump(game.started)
 })
 
 function animate(timestamp: number) {
@@ -40,66 +29,38 @@ function animate(timestamp: number) {
 
   animationId = requestAnimationFrame(animate)
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = '#70c5ce'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-  rectGenerator.draw(ctx)
+  // Clear the canvas.
+  game.clear()
 
   // Draw and update the eagle.
-  eagle.draw(ctx)
+  eagle.update(game.started, rectGenerator.rects)
+  eagle.draw()
 
-  if (!gameStarted) {
+  if (!game.started) {
     return
   }
-
-  // Check for collision with bottom of canvas.
-  if (eagle.y + eagle.radius > canvas.height) {
-    handleGameOver()
-  }
-
-  // Check for collisions between the eagle and the rectangles.
-  if (eagle.collidesWithRectangles(rectGenerator.rects)) {
-    handleGameOver()
-  }
-
-  eagle.update(rectGenerator.rects)
-
-  // Draw the score.
-  drawScore()
 
   // Generate and draw the rectangles.
   rectGenerator.generateRectangles(timestamp)
   rectGenerator.update()
-}
+  rectGenerator.draw()
 
-function handleGameOver() {
-  cancelAnimationFrame(animationId)
-  drawGameOver()
-  document.addEventListener('keydown', pressedSpaceToRestartGame)
-  canvas.addEventListener('click', restartGame)
-}
+  // Check for collision with bottom of canvas.
+  if (eagle.y + eagle.radius > game.canvas.height) {
+    cancelAnimationFrame(animationId)
+    game.end()
+    game.canvas.addEventListener('click', restartGame)
+  }
 
-function drawGameOver() {
-  ctx.fillStyle = '#FFFFFF'
-  ctx.font = 'bold 48px sans-serif'
+  // Check for collisions between the eagle and the rectangles.
+  if (eagle.collidesWithRectangles(rectGenerator.rects)) {
+    cancelAnimationFrame(animationId)
+    game.end()
+    game.canvas.addEventListener('click', restartGame)
+  }
 
-  const gameOverText = 'Game Over'
-  const gameOverTextWidth = ctx.measureText(gameOverText).width
-  const gameOverTextX = (canvas.width - gameOverTextWidth) / 2
-  const gameOverTextY = canvas.height / 2 - 24
-
-  ctx.fillText(gameOverText, gameOverTextX, gameOverTextY)
-
-  ctx.font = 'bold 24px sans-serif'
-  ctx.fillStyle = '#FFFFFF'
-
-  const restartText = 'Press space to restart'
-  const restartTextWidth = ctx.measureText(restartText).width
-  const restartTextX = (canvas.width - restartTextWidth) / 2
-  const restartTextY = canvas.height / 2 + 24
-
-  ctx.fillText(restartText, restartTextX, restartTextY)
+  // Draw the score.
+  drawScore()
 }
 
 function drawScore() {
@@ -107,27 +68,17 @@ function drawScore() {
   const textSize = 50
   const text = eagle.score.toString()
 
-  ctx.font = 'bold 54px FlappyBird'
-  const textWidth = ctx.measureText(text).width
+  game.ctx.font = 'bold 54px FlappyBird'
+  const textWidth = game.ctx.measureText(text).width
 
-  const x = canvas.width / 2 - textWidth / 2
+  const x = game.canvas.width / 2 - textWidth / 2
   const y = padding + textSize
 
-  ctx.fillStyle = '#fff'
-  ctx.strokeStyle = '#000'
-  ctx.lineWidth = 2
-  ctx.fillText(text, x, y)
-  ctx.strokeText(text, x, y)
-}
-
-function pressedSpaceToRestartGame(event: KeyboardEvent) {
-  if (event.code === 'Space') {
-    restartGame()
-  }
-}
-
-function startGame() {
-  gameStarted = true
+  game.ctx.fillStyle = '#fff'
+  game.ctx.strokeStyle = '#000'
+  game.ctx.lineWidth = 2
+  game.ctx.fillText(text, x, y)
+  game.ctx.strokeText(text, x, y)
 }
 
 function restartGame() {
@@ -137,12 +88,11 @@ function restartGame() {
   // Reset the eagle's position and velocity.
   eagle.reset(canvas)
 
-  // Remove the event listeners for restarting the game.
-  document.removeEventListener('keydown', pressedSpaceToRestartGame)
-  canvas.removeEventListener('click', restartGame)
+  // Remove the event listener for restarting the game.
+  game.canvas.removeEventListener('click', restartGame)
 
   // Start the animation loop.
-  gameStarted = false
+  game.started = false
   lastTime = 0
   animate(0)
   eagle.score = 0
