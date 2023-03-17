@@ -2,12 +2,13 @@ import Rectangle from '@/Rectangle'
 
 export default class Eagle {
   public velocityY = 0
-  private gravity = 0.4
+  private gravity = 0.5
   public score = 0
   private frameDelay = 5
   private frameCount = 0
   private spriteIndex = 0
   private sprites: Array<HTMLImageElement>
+  private maxVelocityY = 18
 
   constructor(
     public width: number,
@@ -35,16 +36,31 @@ export default class Eagle {
       this.frameCount = 0
     }
 
+    // Calculate rotation angle based on velocity
+    const rotationAngle = (Math.PI / 6) * (this.velocityY / this.maxVelocityY)
+
+    // Save the current context state
+    context.save()
+
+    // Translate to the eagle's position
+    context.translate(this.x, this.y)
+
+    // Rotate based on velocity
+    context.rotate(rotationAngle)
+
     // Draw the current sprite
     const image = this.sprites[this.spriteIndex]
 
     context.drawImage(
       image,
-      this.x - this.width / 2,
-      this.y - this.height / 2,
+      -this.width / 2,
+      -this.height / 2,
       this.width,
       this.height,
     )
+
+    // Restore the saved context state
+    context.restore()
   }
 
   public update(rectangles: Rectangle[]) {

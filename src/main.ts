@@ -131,7 +131,7 @@ function startGame() {
 }
 
 function jump() {
-  eagle.velocityY = -5
+  eagle.velocityY = -8
 }
 
 function restartGame() {
