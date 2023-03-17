@@ -22,7 +22,7 @@ const rectGenerator = new RectangleGenerator(canvas)
 
 canvas.addEventListener('click', () => {
   if (gameStarted) {
-    jump()
+    eagle.jump()
   } else {
     startGame()
   }
@@ -128,10 +128,6 @@ function pressedSpaceToRestartGame(event: KeyboardEvent) {
 
 function startGame() {
   gameStarted = true
-}
-
-function jump() {
-  eagle.velocityY = -8
 }
 
 function restartGame() {

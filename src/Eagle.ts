@@ -112,4 +112,8 @@ export default class Eagle {
 
     return false
   }
+
+  public jump() {
+    this.velocityY = -8
+  }
 }
