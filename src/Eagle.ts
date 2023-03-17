@@ -72,7 +72,7 @@ export default class Eagle {
   }
 
   public reset(canvas: HTMLCanvasElement) {
-    this.x = canvas.width / 2
+    this.x = canvas.width / 2.5
     this.y = canvas.height / 2
     this.velocityY = 0
   }
