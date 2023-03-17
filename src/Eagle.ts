@@ -78,40 +78,18 @@ export default class Eagle {
   }
 
   public collidesWithRectangles(rectangles: Rectangle[]): boolean {
+    // Create a rectangle that represents the bounds of the eagle
+    const eagleRect = new Rectangle(
+      this.x - this.width / 1.5,
+      this.y - this.height / 2,
+      this.height,
+    )
+
     for (let i = 0; i < rectangles.length; i++) {
       const rect = rectangles[i]
-      const rectCenterX = rect.x + rect.width / 2
-      const rectCenterY = rect.y + rect.height / 2
-      const circleDistanceX = Math.abs(this.x - rectCenterX)
-      const circleDistanceY = Math.abs(this.y - rectCenterY)
-      const rectHalfWidth = rect.width / 2
-      const rectHalfHeight = rect.height / 2
 
-      // Check if the circle's x-coordinate is outside the rectangle
-      if (circleDistanceX > rectHalfWidth + this.radius) {
-        return false
-      }
-
-      // Check if the circle's y-coordinate is outside the rectangle
-      if (circleDistanceY > rectHalfHeight + this.radius) {
-        return false
-      }
-
-      // Check if the circle's x-coordinate is within the rectangle
-      if (circleDistanceX <= rectHalfWidth) {
-        return true
-      }
-
-      // Check if the circle's y-coordinate is within the rectangle
-      if (circleDistanceY <= rectHalfHeight) {
-        return true
-      }
-
-      // Check if the circle collides with the corner of the rectangle
-      const cornerDistanceSq =
-        Math.pow(circleDistanceX - rectHalfWidth, 2) +
-        Math.pow(circleDistanceY - rectHalfHeight, 2)
-      if (cornerDistanceSq <= Math.pow(this.radius, 2)) {
+      // Check if the eagle's bounds intersect with the rectangle
+      if (eagleRect.intersects(rect)) {
         return true
       }
     }
