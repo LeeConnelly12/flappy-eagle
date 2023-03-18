@@ -38,6 +38,7 @@ export default class Game {
   }
 
   public end() {
+    this.score = 0
     this.gameHasEnded = true
     cancelAnimationFrame(this.animationId)
   }
