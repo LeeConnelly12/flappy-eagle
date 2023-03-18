@@ -27,9 +27,11 @@ export default class Game {
     this.canvas.addEventListener('click', () => {
       if (this.gameHasEnded) {
         this.gameHasStarted = false
+        this.eagle.idling = true
         this.restart()
       } else {
         this.gameHasStarted = true
+        this.eagle.idling = false
         this.eagle.jump()
       }
     })
@@ -72,6 +74,10 @@ export default class Game {
   }
 
   private update(deltaTime: number) {
+    if (this.eagle.idling) {
+      this.eagle.idle(deltaTime)
+    }
+
     // Only apply gravity when the game starts.
     if (this.gameHasStarted) {
       this.eagle.update(deltaTime)
