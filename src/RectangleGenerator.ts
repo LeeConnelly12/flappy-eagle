@@ -4,10 +4,7 @@ export default class RectangleGenerator {
   public rects: Rectangle[] = []
   private lastRectTime: number = 0
 
-  constructor(
-    private canvas: HTMLCanvasElement,
-    private ctx: CanvasRenderingContext2D,
-  ) {}
+  constructor(private canvas: HTMLCanvasElement) {}
 
   public generateRectangles(timestamp: number): void {
     // If this is the first time the method is called, set the last rectangle generation time to the current timestamp
@@ -55,15 +52,19 @@ export default class RectangleGenerator {
     this.rects = this.rects.filter((rect) => rect.x + rect.width >= 0)
   }
 
-  update() {
+  public clear() {
+    this.rects = []
+  }
+
+  public update() {
     for (const rect of this.rects) {
       rect.update()
     }
   }
 
-  public draw() {
+  public draw(ctx: CanvasRenderingContext2D) {
     for (const rect of this.rects) {
-      rect.draw(this.ctx)
+      rect.draw(ctx)
     }
   }
 }

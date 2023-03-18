@@ -2,11 +2,12 @@ import Rectangle from '@/Rectangle'
 
 export default class Eagle {
   public velocityY = 0
-  private gravity = 0.5
+  private gravity = 0.8
   public width = 68
   public height = 48
   public radius = 25
-  public score = 0
+  public initialX: number
+  public initialY: number
   public x: number
   public y: number
   private frameDelay = 5
@@ -20,12 +21,11 @@ export default class Eagle {
   private sprites: Array<HTMLImageElement>
   private maxVelocityY = 18
 
-  constructor(
-    private canvas: HTMLCanvasElement,
-    private ctx: CanvasRenderingContext2D,
-  ) {
-    this.x = this.canvas.width / 2.5
-    this.y = this.canvas.height / 2
+  constructor(x: number, y: number) {
+    this.initialX = x
+    this.initialY = y
+    this.x = x
+    this.y = y
 
     this.sprites = this.spriteURLs.map((sprite) => {
       const image = new Image()
@@ -34,7 +34,7 @@ export default class Eagle {
     })
   }
 
-  public draw() {
+  public draw(ctx: CanvasRenderingContext2D) {
     // Increment frameCount
     this.frameCount++
 
@@ -46,21 +46,22 @@ export default class Eagle {
     }
 
     // Calculate rotation angle based on velocity
-    const rotationAngle = (Math.PI / 6) * (this.velocityY / this.maxVelocityY)
+    const rotationAngle =
+      (Math.PI / 6) * (this.velocityY / this.maxVelocityY) * 24
 
     // Save the current context state
-    this.ctx.save()
+    ctx.save()
 
     // Translate to the eagle's position
-    this.ctx.translate(this.x, this.y)
+    ctx.translate(this.x, this.y)
 
     // Rotate based on velocity
-    this.ctx.rotate(rotationAngle)
+    ctx.rotate(rotationAngle)
 
     // Draw the current sprite
     const image = this.sprites[this.spriteIndex]
 
-    this.ctx.drawImage(
+    ctx.drawImage(
       image,
       -this.width / 2,
       -this.height / 2,
@@ -69,40 +70,25 @@ export default class Eagle {
     )
 
     // Restore the saved context state
-    this.ctx.restore()
+    ctx.restore()
   }
 
-  public update(started: boolean, rectangles: Rectangle[]) {
-    if (!started) {
-      return
-    }
+  public update(deltaTime: number) {
+    const timeInSeconds = deltaTime / 1000
 
-    this.y += this.velocityY
-    this.velocityY += this.gravity
+    // Apply gravity to the velocity
+    this.velocityY += this.gravity * timeInSeconds
 
-    // Check if eagle has passed any rectangles.
-    rectangles.forEach((rect) => {
-      if (rect.passed) {
-        return
-      }
+    // Limit the velocity to prevent the eagle from moving too fast
+    this.velocityY = Math.min(this.velocityY, this.maxVelocityY)
 
-      if (this.x <= rect.x + rect.width) {
-        return
-      }
-
-      const passedTwoRectangles = rectangles.some(
-        (r) => r !== rect && r.x === rect.x,
-      )
-
-      this.score += passedTwoRectangles ? 0.5 : 1.0
-
-      rect.passed = true
-    })
+    // Update the eagle's position based on the velocity and elapsed time
+    this.y += this.velocityY * deltaTime
   }
 
   public reset() {
-    this.x = this.canvas.width / 2.5
-    this.y = this.canvas.height / 2
+    this.x = this.initialX
+    this.y = this.initialY
     this.velocityY = 0
   }
 
@@ -126,9 +112,7 @@ export default class Eagle {
     return false
   }
 
-  public jump(started: boolean) {
-    if (started) {
-      this.velocityY = -8
-    }
+  public jump() {
+    this.velocityY = -0.4
   }
 }
