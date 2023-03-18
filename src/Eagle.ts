@@ -10,7 +10,7 @@ export default class Eagle {
   public initialY: number
   public x: number
   public y: number
-  private frameDelay = 5
+  private frameDelay = 10
   private frameCount = 0
   private spriteIndex = 0
   private spriteURLs = [
