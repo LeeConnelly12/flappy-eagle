@@ -92,11 +92,7 @@ export default class Game {
         return
       }
 
-      const passedTwoRectangles = rectangles.some(
-        (r) => r !== rect && r.x === rect.x,
-      )
-
-      this.score += passedTwoRectangles ? 0.5 : 1.0
+      this.score += 0.5
 
       rect.passed = true
     })
