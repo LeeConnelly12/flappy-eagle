@@ -2,7 +2,7 @@ import Rectangle from '@/Rectangle'
 
 export default class Eagle {
   public velocityY = 0
-  private gravity = 0.8
+  private gravity = 1.1
   public width = 68
   public height = 48
   public radius = 25
