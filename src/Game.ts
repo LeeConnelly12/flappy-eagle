@@ -113,7 +113,7 @@ export default class Game {
     }
 
     this.clear()
-    this.eagle.draw(this.ctx)
+    this.eagle.draw(this.ctx, this.gameHasStarted)
     this.rectangleGenerator.draw(this.ctx)
     this.drawScore()
   }
