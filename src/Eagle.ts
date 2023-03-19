@@ -8,7 +8,6 @@ export default class Eagle {
   public initialY: number
   public x: number
   public y: number
-  public idling = true
   private time = 0
   private startY: number
   private amplitude = 5
@@ -38,7 +37,7 @@ export default class Eagle {
     })
   }
 
-  public draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D, gameHasStarted: boolean) {
     // Increment frameCount
     this.frameCount++
 
@@ -58,7 +57,7 @@ export default class Eagle {
     ctx.translate(this.x, this.y)
 
     // Rotate based on velocity
-    if (!this.idling) {
+    if (gameHasStarted) {
       const rotationAngle =
         (Math.PI / 6) * (this.velocityY / this.maxVelocityY) * 24
       ctx.rotate(rotationAngle)
