@@ -1,8 +1,10 @@
 export default class Eagle {
   public velocityY = 0
   private gravity = 1.2
-  public width = 68
-  public height = 48
+  public spriteWidth = 280
+  public spriteHeight = 436
+  public width = 80
+  public height = 124
   public radius = 25
   public initialX: number
   public initialY: number
@@ -15,13 +17,10 @@ export default class Eagle {
   private frameDelay = 10
   private frameCount = 0
   private spriteIndex = 0
-  private spriteURLs = [
-    '/images/upflap.png',
-    '/images/midflap.png',
-    '/images/downflap.png',
-  ]
-  private sprites: Array<HTMLImageElement>
+  private sprites: HTMLImageElement
   private maxVelocityY = 18
+
+  private spriteURL = '/images/eagle.png'
 
   constructor(x: number, y: number) {
     this.initialX = x
@@ -30,21 +29,40 @@ export default class Eagle {
     this.y = y
     this.startY = y
 
-    this.sprites = this.spriteURLs.map((sprite) => {
-      const image = new Image()
-      image.src = sprite
-      return image
-    })
+    const image = new Image()
+    image.src = this.spriteURL
+
+    this.sprites = image
   }
 
   public draw(ctx: CanvasRenderingContext2D, gameHasStarted: boolean) {
+    const cycleLoop = [0, 1, 2, 1, 3, 4, 3]
+
+    const drawFrame = (
+      frameX: number,
+      frameY: number,
+      canvasX: number,
+      canvasY: number,
+    ) => {
+      ctx.drawImage(
+        this.sprites,
+        frameX * this.spriteWidth,
+        frameY * this.spriteHeight,
+        this.spriteWidth,
+        this.spriteHeight,
+        canvasX,
+        canvasY,
+        this.width,
+        this.height,
+      )
+    }
     // Increment frameCount
     this.frameCount++
 
     // Check if it's time to change the sprite
     if (this.frameCount >= this.frameDelay) {
       // Change sprite index and reset frameCount
-      this.spriteIndex = (this.spriteIndex + 1) % this.sprites.length
+      this.spriteIndex = (this.spriteIndex + 1) % cycleLoop.length
       this.frameCount = 0
     }
 
@@ -64,15 +82,7 @@ export default class Eagle {
     }
 
     // Draw the current sprite
-    const image = this.sprites[this.spriteIndex]
-
-    ctx.drawImage(
-      image,
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height,
-    )
+    drawFrame(cycleLoop[this.spriteIndex], 0, -this.width / 2, -this.height / 2)
 
     // Restore the saved context state
     ctx.restore()
