@@ -1,5 +1,3 @@
-import Rectangle from '@/Rectangle'
-
 export default class Eagle {
   public velocityY = 0
   private gravity = 1.2
@@ -121,26 +119,6 @@ export default class Eagle {
     this.x = this.initialX
     this.y = this.initialY
     this.velocityY = 0
-  }
-
-  public collidesWithRectangles(rectangles: Rectangle[]): boolean {
-    // Create a rectangle that represents the bounds of the eagle
-    const eagleRect = new Rectangle(
-      this.x - this.width / 1.5,
-      this.y - this.height / 2,
-      this.height,
-    )
-
-    for (let i = 0; i < rectangles.length; i++) {
-      const rect = rectangles[i]
-
-      // Check if the eagle's bounds intersect with the rectangle
-      if (eagleRect.intersects(rect)) {
-        return true
-      }
-    }
-
-    return false
   }
 
   public jump() {
