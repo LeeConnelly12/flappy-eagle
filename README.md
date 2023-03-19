@@ -4,24 +4,38 @@
 
 ## About
 
-Flappy bird clone, except you're an eagle.
+Flappy bird clone, except you're a patriotic american bald eagle with a gun.
+
+## Install PNPM
+
+Through NPM
+
+```
+npm install -g pnpm
+```
+
+Mac Homebrew
+
+```
+brew install pnpm
+```
 
 ## Building
 
 Install dependencies
 
 ```
-npm i
+pnpm i
 ```
 
 Run dev server
 
 ```
-npm run dev
+pnpm dev
 ```
 
 Build the assets
 
 ```
-npm run build
+pnpm build
 ```
