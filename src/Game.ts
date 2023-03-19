@@ -23,15 +23,7 @@ export default class Game {
     this.eagle = new Eagle(this.canvas.width / 2.5, this.canvas.height / 2)
     this.rectangleGenerator = new RectangleGenerator(this.canvas)
 
-    this.canvas.addEventListener('click', () => {
-      if (this.gameHasEnded) {
-        this.gameHasStarted = false
-        this.restart()
-      } else {
-        this.gameHasStarted = true
-        this.eagle.jump()
-      }
-    })
+    this.canvas.addEventListener('click', () => this.clicked())
 
     this.animationId = requestAnimationFrame(() => this.animate())
   }
@@ -40,6 +32,16 @@ export default class Game {
     this.score = 0
     this.gameHasEnded = true
     cancelAnimationFrame(this.animationId)
+  }
+
+  private clicked() {
+    if (this.gameHasEnded) {
+      this.gameHasStarted = false
+      this.restart()
+    } else {
+      this.gameHasStarted = true
+      this.eagle.jump()
+    }
   }
 
   private restart() {
