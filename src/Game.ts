@@ -1,5 +1,6 @@
 import Eagle from '@/Eagle'
 import RectangleGenerator from '@/RectangleGenerator'
+import Leaderboard from '@/Leaderboard'
 
 export default class Game {
   private readonly canvas: HTMLCanvasElement
@@ -8,6 +9,7 @@ export default class Game {
   private gameHasEnded = false
   private eagle: Eagle
   private rectangleGenerator: RectangleGenerator
+  private leaderboard: Leaderboard
   private lastTime = 0
   private fps = 60
   private animationId: number
@@ -22,6 +24,9 @@ export default class Game {
 
     this.eagle = new Eagle(this.canvas.width / 2.5, this.canvas.height / 2)
     this.rectangleGenerator = new RectangleGenerator(this.canvas)
+
+    this.leaderboard = new Leaderboard()
+    this.leaderboard.fetchSubmissions()
 
     this.canvas.addEventListener('click', () => this.clicked())
 
@@ -75,9 +80,16 @@ export default class Game {
     }
 
     this.clear()
+
     this.eagle.draw(this.ctx, this.gameHasStarted)
+
     this.rectangleGenerator.draw(this.ctx)
+
     this.drawScore()
+
+    if (!this.gameHasStarted) {
+      this.leaderboard.draw(this.ctx)
+    }
   }
 
   private drawScore() {
@@ -99,9 +111,9 @@ export default class Game {
   }
 
   public end() {
-    this.score = 0
     this.gameHasEnded = true
     cancelAnimationFrame(this.animationId)
+    this.leaderboard.showForm(this.score)
   }
 
   private clicked() {
@@ -115,6 +127,9 @@ export default class Game {
   }
 
   private restart() {
+    this.leaderboard.hideForm()
+    this.leaderboard.fetchSubmissions()
+    this.score = 0
     this.rectangleGenerator.clear()
     this.gameHasEnded = false
     this.eagle.reset()

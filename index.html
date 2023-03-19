@@ -5,10 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flappy Eagle</title>
+    <script type="module" src="/src/main.ts"></script>
   </head>
 
   <body class="grid place-items-center min-h-screen">
-    <canvas id="canvas"></canvas>
-    <script type="module" src="/src/main.ts"></script>
+    <div class="w-[480px] h-[640px] relative grid place-items-center">
+      <canvas id="canvas"></canvas>
+      <form class="hidden absolute" id="form">
+        <input type="hidden" name="score" id="score">
+        <input type="text" name="name" required maxlength="12">
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   </body>
 </html>
