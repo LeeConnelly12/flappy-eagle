@@ -28,44 +28,6 @@ export default class Game {
     this.animationId = requestAnimationFrame(() => this.animate())
   }
 
-  public end() {
-    this.score = 0
-    this.gameHasEnded = true
-    cancelAnimationFrame(this.animationId)
-  }
-
-  private clicked() {
-    if (this.gameHasEnded) {
-      this.gameHasStarted = false
-      this.restart()
-    } else {
-      this.gameHasStarted = true
-      this.eagle.jump()
-    }
-  }
-
-  private restart() {
-    this.rectangleGenerator.clear()
-    this.gameHasEnded = false
-    this.eagle.reset()
-    this.lastTime = 0
-    this.animationId = requestAnimationFrame(() => this.animate())
-  }
-
-  private animate() {
-    this.animationId = requestAnimationFrame(() => this.animate())
-
-    const now = performance.now()
-    const deltaTime = now - this.lastTime
-    const interval = 1000 / this.fps
-
-    if (deltaTime > interval) {
-      this.lastTime = now - (deltaTime % interval)
-      this.update(deltaTime)
-      this.draw()
-    }
-  }
-
   private clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.ctx.fillStyle = '#70c5ce'
@@ -118,18 +80,6 @@ export default class Game {
     this.drawScore()
   }
 
-  private drawGameOverText() {
-    this.ctx.fillStyle = '#FFFFFF'
-    this.ctx.font = 'bold 48px sans-serif'
-
-    const gameOverText = 'Game Over'
-    const gameOverTextWidth = this.ctx.measureText(gameOverText).width
-    const gameOverTextX = (this.canvas.width - gameOverTextWidth) / 2
-    const gameOverTextY = this.canvas.height / 2 - 24
-
-    this.ctx.fillText(gameOverText, gameOverTextX, gameOverTextY)
-  }
-
   private drawScore() {
     const padding = 80
     const textSize = 50
@@ -146,5 +96,55 @@ export default class Game {
     this.ctx.lineWidth = 2
     this.ctx.fillText(text, x, y)
     this.ctx.strokeText(text, x, y)
+  }
+
+  public end() {
+    this.score = 0
+    this.gameHasEnded = true
+    cancelAnimationFrame(this.animationId)
+  }
+
+  private clicked() {
+    if (this.gameHasEnded) {
+      this.gameHasStarted = false
+      this.restart()
+    } else {
+      this.gameHasStarted = true
+      this.eagle.jump()
+    }
+  }
+
+  private restart() {
+    this.rectangleGenerator.clear()
+    this.gameHasEnded = false
+    this.eagle.reset()
+    this.lastTime = 0
+    this.animationId = requestAnimationFrame(() => this.animate())
+  }
+
+  private drawGameOverText() {
+    this.ctx.fillStyle = '#FFFFFF'
+    this.ctx.font = 'bold 48px sans-serif'
+
+    const gameOverText = 'Game Over'
+    const gameOverTextWidth = this.ctx.measureText(gameOverText).width
+    const gameOverTextX = (this.canvas.width - gameOverTextWidth) / 2
+    const gameOverTextY = this.canvas.height / 2 - 24
+
+    this.ctx.fillText(gameOverText, gameOverTextX, gameOverTextY)
+  }
+
+  private animate() {
+    this.animationId = requestAnimationFrame(() => this.animate())
+
+    const now = performance.now()
+    const deltaTime = now - this.lastTime
+    const interval = 1000 / this.fps
+
+    if (deltaTime > interval) {
+      this.lastTime = now - (deltaTime % interval)
+      this.update(deltaTime)
+      this.draw()
+    }
   }
 }
