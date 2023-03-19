@@ -1,7 +1,7 @@
 import Rectangle from '@/Rectangle'
 
 export default class RectangleGenerator {
-  public rects: Rectangle[] = []
+  public rectangles: Rectangle[] = []
   private lastRectTime: number = 0
 
   constructor(private canvas: HTMLCanvasElement) {}
@@ -37,29 +37,31 @@ export default class RectangleGenerator {
       const rect2 = new Rectangle(this.canvas.width, positionY2, height2)
 
       // Add the rectangles to the list of rectangles
-      this.rects.push(rect1, rect2)
+      this.rectangles.push(rect1, rect2)
 
       // Update the last rectangle generation time
       this.lastRectTime = timestamp
     }
 
     // Remove any rectangles that have gone off the screen
-    this.rects = this.rects.filter((rect) => rect.x + rect.width >= 0)
+    this.rectangles = this.rectangles.filter(
+      (rectangle) => rectangle.x + rectangle.width >= 0,
+    )
   }
 
   public clear() {
-    this.rects = []
+    this.rectangles = []
   }
 
   public update() {
-    for (const rect of this.rects) {
-      rect.update()
+    for (const rectangle of this.rectangles) {
+      rectangle.update()
     }
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    for (const rect of this.rects) {
-      rect.draw(ctx)
+    for (const rectangle of this.rectangles) {
+      rectangle.draw(ctx)
     }
   }
 }
