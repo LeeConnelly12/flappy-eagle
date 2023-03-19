@@ -123,4 +123,8 @@ export default class Eagle {
   public jump() {
     this.velocityY = -0.4
   }
+
+  public isTouchingBottomOfCanvas(canvasHeight: number): boolean {
+    return this.y + this.radius > canvasHeight
+  }
 }

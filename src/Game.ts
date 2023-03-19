@@ -1,6 +1,5 @@
 import Eagle from '@/Eagle'
 import RectangleGenerator from '@/RectangleGenerator'
-import Rectangle from '@/Rectangle'
 
 export default class Game {
   private readonly canvas: HTMLCanvasElement
@@ -81,44 +80,28 @@ export default class Game {
       this.eagle.idle(deltaTime)
     }
 
-    const rectangles = this.rectangleGenerator.rects
+    const rectangles = this.rectangleGenerator.rectangles
 
-    // The eagle passed a rectangle, increment the score
-    // Check if eagle has passed any rectangles.
-    rectangles.forEach((rect) => {
-      if (rect.passed) {
-        return
-      }
-
-      if (this.eagle.x <= rect.x + rect.width) {
-        return
-      }
-
-      this.score += 0.5
-
-      rect.passed = true
+    const passingRectangles = rectangles.filter((rectangle) => {
+      return rectangle.isBeingPastByEagle(this.eagle.x + this.eagle.width / 2)
     })
 
-    // The eagle touched the bottom, end the game.
-    if (this.eagle.y + this.eagle.radius > this.canvas.height) {
+    if (passingRectangles.length > 0) {
+      this.score += 1
+      passingRectangles.forEach((rectangle) => {
+        rectangle.isPast = true
+      })
+    }
+
+    if (this.eagle.isTouchingBottomOfCanvas(this.canvas.height)) {
       this.end()
     }
 
-    // The eagle touched a rectangle, end the game.
-    const eagleRect = new Rectangle(
-      this.eagle.x - this.eagle.width / 1.5,
-      this.eagle.y - this.eagle.height / 2,
-      this.eagle.height,
-    )
-
-    for (let i = 0; i < rectangles.length; i++) {
-      const rect = rectangles[i]
-
-      // Check if the eagle's bounds intersect with the rectangle
-      if (eagleRect.intersects(rect)) {
+    rectangles.forEach((rectangle) => {
+      if (rectangle.isTouchingEagle(this.eagle)) {
         this.end()
       }
-    }
+    })
   }
 
   private draw() {
