@@ -2,6 +2,7 @@ import axios from 'axios'
 
 export default class Leaderboard {
   private form: HTMLFormElement
+  private submissions: { name: string; score: number }[] = []
 
   constructor() {
     this.form = document.getElementById('form') as HTMLFormElement
@@ -18,7 +19,23 @@ export default class Leaderboard {
     this.form.classList.add('hidden')
   }
 
-  public fetchSubmissions() {}
+  public async fetchSubmissions() {
+    const { data } = await axios.get('/leaderboard')
+    this.submissions = data.data
+  }
+
+  public draw(ctx: CanvasRenderingContext2D) {
+    for (let i = 0; i < this.submissions.length; i++) {
+      const submission = this.submissions[i]
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'
+      ctx.font = 'bold 16px sans-serif'
+      ctx.fillText(
+        `#${i + 1} ${submission.name} - ${submission.score}`,
+        300,
+        (i + 12) * 30,
+      )
+    }
+  }
 
   public submitForm(e: Event) {
     e.preventDefault()
