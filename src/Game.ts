@@ -47,7 +47,7 @@ export default class Game {
     const rectangles = this.rectangleGenerator.rectangles
 
     const passingRectangles = rectangles.filter((rectangle) => {
-      return rectangle.isBeingPastByEagle(this.eagle.x + this.eagle.width / 2)
+      return rectangle.isPastEagle(this.eagle.x + this.eagle.width / 2)
     })
 
     if (passingRectangles.length > 0) {

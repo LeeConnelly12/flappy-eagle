@@ -36,7 +36,7 @@ export default class Rectangle {
     )
   }
 
-  public isBeingPastByEagle(eagleX: number): boolean {
+  public isPastEagle(eagleX: number): boolean {
     if (this.isPast) {
       return false
     }
