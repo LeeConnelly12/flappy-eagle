@@ -7,4 +7,10 @@
         font-family: 'FlappyBird';
         src: url('/fonts/FlappyBird.woff2') format('woff2');
     }
+
+    @font-face {
+        font-family: 'Roboto';
+        src: url('/fonts/roboto-bold.woff2') format('woff2');
+        font-weight: bold;
+    }
 }
