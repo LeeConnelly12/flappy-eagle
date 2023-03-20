@@ -2,17 +2,21 @@ import axios from 'axios'
 
 export default class Leaderboard {
   private form: HTMLFormElement
+  private scoreInput: HTMLInputElement
+  private nameInput: HTMLInputElement
   private submissions: { name: string; score: number }[] = []
 
   constructor() {
     this.form = document.getElementById('form') as HTMLFormElement
     this.form.addEventListener('submit', (e: Event) => this.submitForm(e))
+    this.scoreInput = this.form.querySelector('#score') as HTMLInputElement
+    this.nameInput = this.form.querySelector('#name') as HTMLInputElement
   }
 
   public showForm(score: number) {
     this.form.classList.remove('hidden')
-    const scoreInput = this.form.querySelector('#score') as HTMLInputElement
-    scoreInput.value = score.toString()
+    this.scoreInput.value = score.toString()
+    this.nameInput.focus()
   }
 
   public hideForm() {
