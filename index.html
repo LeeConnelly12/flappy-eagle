@@ -11,10 +11,11 @@
   <body class="grid place-items-center min-h-screen">
     <div class="w-[480px] h-[640px] relative grid place-items-center">
       <canvas id="canvas"></canvas>
-      <form class="hidden absolute max-w-[260px] text-right mt-40 font-bold" id="form">
-        <input type="hidden" name="score" id="score">
-        <input type="text" class="h-11 rounded-sm w-full px-4 focus:outline focus:outline-2 focus:outline-blue-600" name="name" id="name" placeholder="Your name..." required maxlength="12">
-        <button type="submit" class="text-white bg-green-600 rounded-sm h-11 px-10 mt-4 hover:bg-green-500 focus:outline focus:outline-2 focus:outline-blue-600">Submit</button>
+      <form class="hidden absolute max-w-[260px] text-right mt-40 font-bold grid-cols-2 gap-4" id="form">
+        <input type="hidden" name="score" id="score" />
+        <input type="text" class="h-11 rounded-sm w-full px-4 focus:outline focus:outline-2 focus:outline-blue-600 col-span-full" name="name" id="name" placeholder="Your name..." required maxlength="12" />
+        <button type="button" class="text-white bg-green-600 rounded-sm h-11 hover:bg-green-500 focus:outline focus:outline-2 focus:outline-blue-600" id="retry">Retry</button>
+        <button type="submit" class="text-white bg-green-600 rounded-sm h-11 hover:bg-green-500 focus:outline focus:outline-2 focus:outline-blue-600">Submit</button>
       </form>
     </div>
   </body>

@@ -14,10 +14,12 @@ export default class Game {
   private fps = 60
   private animationId: number
   private score = 0
+  private retryButton: HTMLButtonElement
 
   constructor() {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement
     this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
+    this.retryButton = document.getElementById('retry') as HTMLButtonElement
 
     this.canvas.width = 480
     this.canvas.height = 640
@@ -29,6 +31,8 @@ export default class Game {
     this.leaderboard.fetchSubmissions()
 
     this.canvas.addEventListener('click', () => this.clicked())
+
+    this.retryButton.addEventListener('click', () => this.restart())
 
     this.animationId = requestAnimationFrame(() => this.animate())
   }
@@ -118,20 +122,20 @@ export default class Game {
 
   private clicked() {
     if (this.gameHasEnded) {
-      this.gameHasStarted = false
-      this.restart()
-    } else {
-      this.gameHasStarted = true
-      this.eagle.jump()
+      return
     }
+
+    this.gameHasStarted = true
+    this.eagle.jump()
   }
 
   private restart() {
+    this.gameHasStarted = false
+    this.gameHasEnded = false
     this.leaderboard.hideForm()
     this.leaderboard.fetchSubmissions()
     this.score = 0
     this.rectangleGenerator.clear()
-    this.gameHasEnded = false
     this.eagle.reset()
     this.lastTime = 0
     this.animationId = requestAnimationFrame(() => this.animate())

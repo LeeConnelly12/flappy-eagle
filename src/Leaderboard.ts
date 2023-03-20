@@ -15,12 +15,14 @@ export default class Leaderboard {
 
   public showForm(score: number) {
     this.form.classList.remove('hidden')
+    this.form.classList.add('grid')
     this.scoreInput.value = score.toString()
     this.nameInput.focus()
   }
 
   public hideForm() {
     this.form.classList.add('hidden')
+    this.form.classList.remove('grid')
   }
 
   public async fetchSubmissions() {
