@@ -11,10 +11,10 @@
   <body class="grid place-items-center min-h-screen">
     <div class="w-[480px] h-[640px] relative grid place-items-center">
       <canvas id="canvas"></canvas>
-      <form class="hidden absolute" id="form">
+      <form class="hidden absolute max-w-[260px] text-right mt-40" id="form">
         <input type="hidden" name="score" id="score">
-        <input type="text" name="name" required maxlength="12">
-        <button type="submit">Submit</button>
+        <input type="text" class="h-11 rounded-sm w-full px-4 font-bold" name="name" placeholder="Your name..." required maxlength="12">
+        <button type="submit" class="text-white bg-green-600 rounded-sm h-11 px-10 mt-4 font-bold hover:bg-green-500 transition-colors duration-300">Submit</button>
       </form>
     </div>
   </body>
