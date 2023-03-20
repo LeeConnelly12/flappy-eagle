@@ -139,7 +139,6 @@ export default class Game {
   }
 
   private restart() {
-    this.submitting = true
     this.gameHasStarted = false
     this.gameHasEnded = false
     this.leaderboard.hideForm()
