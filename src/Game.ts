@@ -15,6 +15,7 @@ export default class Game {
   private animationId: number
   private score = 0
   private retryButton: HTMLButtonElement
+  private gameOverForm: HTMLFormElement
 
   constructor() {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement
@@ -27,8 +28,15 @@ export default class Game {
     this.eagle = new Eagle(this.canvas.width / 2.5, this.canvas.height / 2)
     this.rectangleGenerator = new RectangleGenerator(this.canvas)
 
-    this.leaderboard = new Leaderboard()
+    this.gameOverForm = document.getElementById('form') as HTMLFormElement
+
+    this.leaderboard = new Leaderboard(this.gameOverForm)
     this.leaderboard.fetchSubmissions()
+
+    this.gameOverForm.addEventListener('submit', (e: Event) => {
+      this.leaderboard.submitForm(e)
+      this.restart()
+    })
 
     this.canvas.addEventListener('click', () => this.clicked())
 
@@ -117,6 +125,7 @@ export default class Game {
   public end() {
     this.gameHasEnded = true
     cancelAnimationFrame(this.animationId)
+
     this.leaderboard.showForm(this.score)
   }
 
@@ -130,6 +139,7 @@ export default class Game {
   }
 
   private restart() {
+    this.submitting = true
     this.gameHasStarted = false
     this.gameHasEnded = false
     this.leaderboard.hideForm()

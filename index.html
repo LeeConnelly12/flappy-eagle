@@ -11,11 +11,22 @@
   <body class="grid place-items-center min-h-screen">
     <div class="w-[480px] h-[640px] relative grid place-items-center">
       <canvas id="canvas"></canvas>
-      <form class="hidden absolute max-w-[260px] text-right mt-40 font-bold grid-cols-2 gap-4" id="form">
+
+      <!-- Game over form -->
+      <form class="hidden absolute w-[260px] text-right mt-40 font-bold grid-cols-2 gap-4 justify-center" id="form">
         <input type="hidden" name="score" id="score" />
-        <input type="text" class="h-11 rounded-sm w-full px-4 focus:outline focus:outline-2 focus:outline-blue-600 col-span-full" name="name" id="name" placeholder="Your name..." required maxlength="12" />
+
+        <!-- Name -->
+        <input type="text" class="h-11 hidden rounded-sm w-full px-4 focus:outline focus:outline-2 focus:outline-blue-600 col-span-full" name="name" id="name" placeholder="Your name..." required maxlength="12" />
+
+        <!-- Retry -->
         <button type="button" class="text-white bg-green-600 rounded-sm h-11 hover:bg-green-500 focus:outline focus:outline-2 focus:outline-blue-600" id="retry">Retry</button>
-        <button type="submit" class="text-white bg-green-600 rounded-sm h-11 hover:bg-green-500 focus:outline focus:outline-2 focus:outline-blue-600">Submit</button>
+
+        <!-- Submit -->
+        <button type="submit" class="hidden place-items-center text-white bg-green-600 rounded-sm h-11 hover:bg-green-500 focus:outline focus:outline-2 focus:outline-blue-600" id="submit">
+          <div id="spinner" class="hidden btn-spinner"></div>
+          <div id="submitButtonText">Submit</div>
+        </button>
       </form>
     </div>
   </body>
